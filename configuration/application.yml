@@ -1,0 +1,190 @@
+# This is the base configuration of the server running at open-vsx.org.
+# Properties containing secrets are not included here, e.g. spring.datasource
+# for database access and ovsx.storage.azure for file storage access.
+# Additional properties are loaded from the file provided with the
+# DEPLOYMENT_CONFIG environment variable.
+logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+server:
+  address: 0.0.0.0
+  port: 8080
+  shutdown: graceful
+  error:
+    path: /server-error
+    whitelabel:
+      enabled: false
+  compression:
+    enabled: true
+    mime-types: text/html,text/plain,text/css,application/javascript,application/json,text/xml,application/xml,application/xml+rss,text/javascript
+    min-response-size: 1024
+  jetty:
+    threads:
+      max-queue-capacity: 100
+    connection-idle-timeout: 10000
+spring:
+  application:
+    name: openvsx-server
+  config:
+    import: file:${DEPLOYMENT_CONFIG}
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      leak-detection-threshold: 30000
+  flyway:
+    baseline-on-migrate: false
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  resources:
+    cache:
+      cachecontrol:
+        max-age: 4h
+        cache-public: true
+  session:
+    store-type: jdbc
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+  security:
+    oauth2:
+      client:
+        registration:
+          eclipse:
+            authorization-grant-type: authorization_code
+            scope: openvsx_publisher_agreement, profile
+        provider:
+          eclipse:
+            authorization-uri: https://accounts.eclipse.org/oauth2/authorize
+            token-uri: https://accounts.eclipse.org/oauth2/token
+            user-info-uri: https://accounts.eclipse.org/oauth2/UserInfo
+            user-name-attribute: name
+            user-info-authentication-method: header
+
+management:
+  server:
+    port: 8081
+  health:
+    probes:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      environment: ${ENVNAME}
+      instance: ${HOSTNAME}
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  tracing:
+    sampling:
+      probability: 0.1
+springdoc:
+  model-and-view-allowed: true
+  swagger-ui:
+    path: /swagger-ui
+    docExpansion: list
+    operationsSorter: alpha
+    supportedSubmitMethods:
+      - get
+org:
+  jobrunr:
+    job-scheduler:
+      enabled: true
+    background-job-server:
+      enabled: true
+      worker-count: 2
+    dashboard:
+      enabled: false
+    database:
+      type: sql
+    miscellaneous:
+      allow-anonymous-data-usage: false
+bucket4j:
+  enabled: true
+  filters:
+    - cache-name: buckets
+      url: '/api/-/(namespace/create|publish)'
+      http-response-headers:
+        Access-Control-Allow-Origin: '*'
+        Access-Control-Expose-Headers: X-Rate-Limit-Retry-After-Seconds, X-Rate-Limit-Remaining
+      rate-limits:
+        - cache-key: getParameter("token")
+          bandwidths:
+            - capacity: 15
+              time: 1
+              unit: seconds
+    - cache-name: buckets
+      url: '/vscode/asset/.*/.*/.*/Microsoft.VisualStudio.Services.Icons.Default'
+      http-response-headers:
+        Access-Control-Allow-Origin: '*'
+        Access-Control-Expose-Headers: X-Rate-Limit-Retry-After-Seconds, X-Rate-Limit-Remaining
+      rate-limits:
+        - cache-key: '(getHeader("X-Forwarded-For")?: getRemoteAddr()).split(",")[0].trim()'
+          bandwidths:
+            - capacity: 75
+              time: 1
+              unit: seconds
+    - cache-name: buckets
+      url: '/vscode/(?!asset/.*/.*/.*/Microsoft.VisualStudio.Services.Icons.Default).*'
+      http-response-headers:
+        Access-Control-Allow-Origin: '*'
+        Access-Control-Expose-Headers: X-Rate-Limit-Retry-After-Seconds, X-Rate-Limit-Remaining
+      rate-limits:
+        - cache-key: '(getHeader("X-Forwarded-For")?: getRemoteAddr()).split(",")[0].trim()'
+          bandwidths:
+            - capacity: 15
+              time: 1
+              unit: seconds
+    - cache-name: buckets
+      url: '/api/(?!(.*/.*/review(/delete)?)|(-/(namespace/create|publish))).*'
+      http-response-headers:
+        Access-Control-Allow-Origin: '*'
+        Access-Control-Expose-Headers: X-Rate-Limit-Retry-After-Seconds, X-Rate-Limit-Remaining
+      rate-limits:
+        - execute-condition: getParameter("token") != null
+          cache-key: getParameter("token")
+          bandwidths:
+            - capacity: 15
+              time: 1
+              unit: seconds
+        - execute-condition: getParameter("token") == null
+          cache-key: '(getHeader("X-Forwarded-For")?: getRemoteAddr()).split(",")[0].trim()'
+          bandwidths:
+            - capacity: 15
+              time: 1
+              unit: seconds
+ovsx:
+  storage:
+    primary-service: azure-blob
+  webui:
+    frontendRoutes: "/extension/**,/namespace/**,/user-settings/**,/admin-dashboard/**,/about,/publisher-agreement-*,/terms-of-use,/members,/adopters,/error"
+  eclipse:
+    base-url: https://api.eclipse.org/
+    publisher-agreement:
+      version: 1
+  publishing:
+    require-license: true
+  elasticsearch:
+    enabled: true
+    ssl: true
+  search:
+    relevance:
+      rating: 0.5
+      downloads: 2.0
+      timestamp: 1.2
+  migrations:
+    delay:
+      seconds: 300
+  extension-control:
+    update-on-start: true
+  integrity:
+    key-pair: create
+  registry:
+    version: <SERVER_VERSION>
