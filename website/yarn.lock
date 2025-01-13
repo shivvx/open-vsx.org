@@ -2330,11 +2330,11 @@ __metadata:
   linkType: hard
 
 "nanoid@npm:^3.3.6":
-  version: 3.3.8
-  resolution: "nanoid@npm:3.3.8"
+  version: 3.3.6
+  resolution: "nanoid@npm:3.3.6"
   bin:
     nanoid: bin/nanoid.cjs
-  checksum: 10/2d1766606cf0d6f47b6f0fdab91761bb81609b2e3d367027aff45e6ee7006f660fb7e7781f4a34799fe6734f1268eeed2e37a5fdee809ade0c2d4eb11b0f9c40
+  checksum: 10/67235c39d1bc05851383dadde5cf77ae1c90c2a1d189e845c7f20f646f0488d875ad5f5226bbba072a88cebbb085a3f784a6673117daf785bdf614a852550362
   languageName: node
   linkType: hard
 
@@ -2399,7 +2399,7 @@ __metadata:
     "@types/react-router-dom": "npm:^5.3.3"
     css-loader: "npm:^6.8.1"
     express: "npm:^4.21.1"
-    openvsx-webui: "npm:0.13.1-next.dee19c0f"
+    openvsx-webui: "npm:0.13.1-next.f0cc5cdd"
     source-map-loader: "npm:^4.0.1"
     style-loader: "npm:^3.3.3"
     typescript: "npm:~5.1.6"
@@ -2420,9 +2420,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openvsx-webui@npm:0.13.1-next.dee19c0f":
-  version: 0.13.1-next.dee19c0f
-  resolution: "openvsx-webui@npm:0.13.1-next.dee19c0f"
+"openvsx-webui@npm:0.13.1-next.f0cc5cdd":
+  version: 0.13.1-next.f0cc5cdd
+  resolution: "openvsx-webui@npm:0.13.1-next.f0cc5cdd"
   dependencies:
     "@emotion/react": "npm:^11.11.1"
     "@emotion/styled": "npm:^11.11.0"
@@ -2448,7 +2448,7 @@ __metadata:
     react-router-dom: "npm:^6.14.1"
   peerDependencies:
     "@babel/core": ^7.0.0
-  checksum: 10/9875a6154d8d23e6aa8251af83fe0f48a080c8aeff661876a1472c6489e2b5723a33a59db8161341629017681b4a1baf0b0b44f4f808c1dfb28baa591c11cae5
+  checksum: 10/e35b54a7fb99ef7e1ac66b981ae37b81f3d3298d3a5ca015806a20476e3ad6c9cf81210216de33c2087c90280d2cd38198d4cd78a75ca14fa4e13508a2f00ea7
   languageName: node
   linkType: hard
 
