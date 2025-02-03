@@ -26,35 +26,28 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import { UserSettingsRoutes } from 'openvsx-webui';
 import { MainContext } from 'openvsx-webui/lib/context';
 import { MobileMenuItem, itemIcon, MobileMenuItemText, MobileUserAvatar, headerItem, MenuLink, MenuRouteLink } from 'openvsx-webui/lib/default/menu-content'
-import { LoginComponent } from 'openvsx-webui/lib/default/login'
 import { UserAvatar } from 'openvsx-webui/lib/pages/user/avatar';
 
 //-------------------- Mobile View --------------------//
 
 export const MobileMenuContent: FunctionComponent = () => {
-    const {user, loginProviders} = useContext(MainContext)
+    const {service, user} = useContext(MainContext)
     return <>
-        {loginProviders && (
-            user ? (
-                <MobileUserAvatar />
-            ) : (
-                <MobileMenuItem>
-                    <LoginComponent
-                        loginProviders={loginProviders}
-                        renderButton={(href, onClick) => {
-                            return (<Link href={href} onClick={onClick}>
-                                <MobileMenuItemText>
-                                    <AccountBoxIcon sx={itemIcon} />
-                                    Log In
-                                </MobileMenuItemText>
-                            </Link>);
-                        }}
-                    />
+        {
+            user
+                ? <MobileUserAvatar/>
+                : <MobileMenuItem>
+                    <Link href={service.getLoginUrl()}>
+                        <MobileMenuItemText>
+                            <AccountBoxIcon sx={itemIcon} />
+                            Log In
+                        </MobileMenuItemText>
+                    </Link>
                 </MobileMenuItem>
-            )
-        )}
-        {loginProviders && !location.pathname.startsWith(UserSettingsRoutes.ROOT) && (
-            <MobileMenuItem>
+        }
+        {
+            !location.pathname.startsWith(UserSettingsRoutes.ROOT)
+            ? <MobileMenuItem>
                 <RouteLink to='/user-settings/extensions'>
                     <MobileMenuItemText>
                         <PublishIcon sx={itemIcon} />
@@ -62,7 +55,8 @@ export const MobileMenuContent: FunctionComponent = () => {
                     </MobileMenuItemText>
                 </RouteLink>
             </MobileMenuItem>
-        )}
+            : null
+        }
         <MobileMenuItem>
             <Link target='_blank' href='https://github.com/eclipse/openvsx'>
                 <MobileMenuItemText>
@@ -162,7 +156,7 @@ const SubMenuLink = styled(Link)(subMenuLink);
 
 
 export const DefaultMenuContent: FunctionComponent = () => {
-    const {loginProviders, user} = useContext(MainContext)
+    const {service, user} = useContext(MainContext)
     const [workingGroupMenuOpen, setWorkingGroupMenuOpen] = useState(false);
     const workingGroupMenuEl = useRef<HTMLButtonElement | null>(null);
     const toggleWorkingGroupMenu = () => setWorkingGroupMenuOpen(!workingGroupMenuOpen);
@@ -194,37 +188,19 @@ export const DefaultMenuContent: FunctionComponent = () => {
         <MenuRouteLink to='/about'>
             About
         </MenuRouteLink>
-        {loginProviders && (
-            <>
-                <Button variant='contained' color='secondary' href='/user-settings/extensions' sx={{ mx: 2.5 }}>
-                    Publish
-                </Button>
-                {
-                    user ?
-                        <UserAvatar />
-                        :
-                        <LoginComponent
-                            loginProviders={loginProviders}
-                            renderButton={(href, onClick) => {
-                                if (href) {
-                                    return (<IconButton
-                                        href={href}
-                                        title='Log In'
-                                        aria-label='Log In' >
-                                        <AccountBoxIcon />
-                                    </IconButton>);
-                                } else {
-                                    return (<IconButton
-                                        onClick={onClick}
-                                        title='Log In'
-                                        aria-label='Log In' >
-                                        <AccountBoxIcon />
-                                    </IconButton>);
-                                }
-                            }}
-                        />
-                }
-            </>
-        )}
+        <Button variant='contained' color='secondary' href='/user-settings/extensions' sx={{ mx: 2.5 }}>
+            Publish
+        </Button>
+        {
+            user ?
+                <UserAvatar />
+                :
+                <IconButton
+                    href={service.getLoginUrl()}
+                    title='Log In'
+                    aria-label='Log In' >
+                    <AccountBoxIcon />
+                </IconButton>
+        }
     </>;
 }

@@ -92,16 +92,15 @@
                 <events-to-fire-on>EXPIRED</events-to-fire-on>
                 <events-to-fire-on>EVICTED</events-to-fire-on>
                 <events-to-fire-on>REMOVED</events-to-fire-on>
-                <events-to-fire-on>UPDATED</events-to-fire-on>
             </listener>
         </listeners>
         <resources>
-            <heap>500</heap>
+            <heap>400</heap>
         </resources>
     </cache>
     <cache alias="files.extension">
         <expiry>
-            <tti unit="hours">2</tti>
+            <tti unit="hours">1</tti>
         </expiry>
         <listeners>
             <listener>
@@ -111,11 +110,10 @@
                 <events-to-fire-on>EXPIRED</events-to-fire-on>
                 <events-to-fire-on>EVICTED</events-to-fire-on>
                 <events-to-fire-on>REMOVED</events-to-fire-on>
-                <events-to-fire-on>UPDATED</events-to-fire-on>
             </listener>
         </listeners>
         <resources>
-            <heap>200</heap>
+            <heap>100</heap>
         </resources>
     </cache>
 </config>
