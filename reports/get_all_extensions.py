@@ -14,7 +14,7 @@ TSV_FILENAME = 'extensions.tsv'
 
 url = API_ENDPOINT + 'api/-/search?size=100'
 
-def retrieve_extensions():
+def get_all_extensions():
     extensions = []
     done = False
     offset = 0
@@ -31,62 +31,57 @@ def retrieve_extensions():
         except Exception as e:
             print("%s: %s" % (datetime.now(), e))
             done = True
-
-    return extensions
-
-def get_extension(extension):
-    extension_url = API_ENDPOINT + 'api/%s/%s' % (extension['namespace'], extension['name'])
-    retry_count = 5
-    while retry_count > 0:
-        try:
-            response = requests.get(extension_url)
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.RequestException as e:
-            print("%s: %s" % (datetime.now(), e))
-            retry_count -= 1
-            time.sleep(2)
-
-    return None
-
-def get_all_extensions():
+    
     count = 1
     all_extensions = []
-    extensions = retrieve_extensions()    
     print("\n\nStarting: %s" % datetime.now())
     for extension in extensions:
-        results = get_extension(extension)
-        if results is None:
+        namespace_url = API_ENDPOINT + 'api/%s/%s' % (extension['namespace'], extension['name'])
+        retry_count = 5
+        while retry_count > 0:
+            try:
+                response = requests.get(namespace_url)
+                if response.status_code == 200:
+                    break
+                else:
+                    raise Exception('%s: HTTP %s Error retrieving %s' % (datetime.now(), response.status_code,extension['url']))
+            except Exception as e:
+                print("%s: %s" % (datetime.now(), e))
+                retry_count -= 1
+                time.sleep(2)
+        if retry_count == 0:
             print('Error retrieving %s' % extension['url'])
         else:
+            results = response.json()
             all_extensions.append(results)
         if int(count/100) == count/100:
             print('Processed %s of %s.' % (count, len(extensions)))
         count += 1
     print("\n\nFinished %s API Calls: %s" % (count, datetime.now()))
 
-    return all_extensions
+    return(all_extensions)
 
 def get_all_by_license():
     extensions_by_license = {}
     all_extensions = get_all_extensions()
     count = 1
     for extension in all_extensions:
-        license_name = extension.get('license', 'None')
-        if license_name in extensions_by_license:
-            extensions_by_license[license_name].append(extension)
+        license = extension.get('license', 'None')
+        if license in extensions_by_license:
+            extensions_by_license[license].append(extension)
         else:
-            extensions_by_license[license_name] = [extension]
+            extensions_by_license[license] = [extension]
         if int(count/100) == count/100:
             print('Processed %s of %s.' % (count, len(all_extensions)))
         count += 1
 
-    return dict(sorted(extensions_by_license.items()))
+    return(dict(sorted(extensions_by_license.items())))
 
 def write_json_file(extensions):
     f = open(JSON_FILENAME, 'w')
     f.write(json.dumps(extensions, indent=4))
     f.close()
+    return
 
 def write_tsv_file(extensions):
     f = open(TSV_FILENAME, 'w')
