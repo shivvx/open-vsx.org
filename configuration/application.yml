@@ -27,12 +27,9 @@ spring:
     name: openvsx-server
   config:
     import: file:${DEPLOYMENT_CONFIG}
-  data:
-    redis:
-      cluster:
-        nodes: 'redis-cluster-staging-0.redis-cluster-staging-headless:6379,redis-cluster-staging-1.redis-cluster-staging-headless:6379,redis-cluster-staging-2.redis-cluster-staging-headless:6379,redis-cluster-staging-3.redis-cluster-staging-headless:6379,redis-cluster-staging-4.redis-cluster-staging-headless:6379,redis-cluster-staging-5.redis-cluster-staging-headless:6379'
-      username: openvsx
-      password: openvsx
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
   datasource:
     hikari:
       maximum-pool-size: 10
@@ -81,9 +78,6 @@ management:
         include:
           - health
           - prometheus
-  zipkin:
-    tracing:
-      endpoint: http://grafana-alloy-staging:9411/api/v2/spans
   tracing:
     sampling:
       probability: 0.01
@@ -111,7 +105,6 @@ org:
       allow-anonymous-data-usage: false
 bucket4j:
   enabled: true
-  cache-to-use: redis-cluster-jedis
   filters:
     - cache-name: buckets
       url: '/api/-/(namespace/create|publish)'
