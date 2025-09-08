@@ -1,9 +1,7 @@
 name: Claim Namespace
 on:
-  # alibi value to not show the workflow as broken
-  workflow_dispatch:
-#   issues:
-#     types: [opened, edited, labeled]
+  issues:
+    types: [opened, edited, labeled]
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.issue.number }}
   cancel-in-progress: true
