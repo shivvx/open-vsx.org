@@ -4,8 +4,6 @@
 # Additional properties are loaded from the file provided with the
 # DEPLOYMENT_CONFIG environment variable.
 logging:
-  pattern:
-    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
   level:
     root: "info"
     org.eclipse.openvsx.ratelimit: "debug"
