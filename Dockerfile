@@ -1,5 +1,5 @@
-ARG SERVER_VERSION=rate-limiting
-ARG SERVER_VERSION_STRING=v0.32.0-rc.2
+ARG SERVER_VERSION=1f431c6
+ARG SERVER_VERSION_STRING=v0.32.0-rc.1
 
 # Builder image to compile the website
 FROM ubuntu:24.04 AS builder
