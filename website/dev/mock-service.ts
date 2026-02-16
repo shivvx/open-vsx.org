@@ -45,7 +45,8 @@ import {
     Customer,
     Tier,
     TierList,
-    UsageStatsList
+    UsageStatsList,
+    LogPageableList
 } from "openvsx-webui";
 
 const avatarUrl = 'https://upload.wikimedia.org/wikipedia/commons/9/99/Avatar_cupcake.png';
@@ -283,6 +284,9 @@ export class MockAdminService implements AdminService {
         throw new Error("Method not implemented.");
     }
     updateTier(abortController: AbortController, name: string, tier: Tier): Promise<Readonly<Tier>> {
+        throw new Error("Method not implemented.");
+    }
+    getLogs(abortController: AbortController, page?: number, size?: number, period?: string): Promise<Readonly<LogPageableList>> {
         throw new Error("Method not implemented.");
     }
 }
