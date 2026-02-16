@@ -1,3 +1,4 @@
+{{- if .Values.clamav.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -73,3 +74,4 @@ spec:
           claimName: clamav-db
       - name: tmp-scans
         emptyDir: {}
+{{- end }}
