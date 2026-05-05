@@ -20,7 +20,7 @@ Our objective with the Open VSX Namespace approval process is to provide an open
 		- [ ] The extension repo is owned by the GitHub ID making this request (same org)
 		- [ ] If not, provide the URL of a commit in the extension repo by the GitHub ID making this request
 			- {URL}
-- [ ] __2__ - The namespace is also a publisher account on the VS Code Marketplace and does not have published extensions. Do one of the following:
+- [ ] __2__ - The namespace is also a publisher account on the VS Code Marketplace and does not have published extensions or has published extensions with no repos listed or only private repos listed.  Do one of the following:
     - [ ] Provide Open VSX administrator ID (`9f9ebf84-37d2-648b-bef8-8af4132d803a`) temporary reader access to the VS Code Marketplace Publisher Account. (Be sure to revoke the reader permission once request has closed)
     - [ ] If the namespace matches your domain name, define a TXT record in your DNS, listing the URL to this issue and provide the domain/subdomain
       - {domain/subdomain}
