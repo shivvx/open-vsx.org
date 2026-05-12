@@ -347,6 +347,7 @@ ovsx:
             file-field: "file"
           response:
             format: json
+            error-path: "$.error"
             # Matches are returned as an array
             threats-path: "$.matches[*]"
             threat-mapping:
