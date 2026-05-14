@@ -10,7 +10,7 @@
   },
   "type": "module",
   "dependencies": {
-    "openvsx-webui": "https://github.com/eclipse-openvsx/openvsx.git#workspace=openvsx-webui&branch=read-only-mode"
+    "openvsx-webui": "https://github.com/eclipse-openvsx/openvsx.git#workspace=openvsx-webui&head=read-only-mode"
   },
   "resolutions": {
     "qs": "^6.14.1"
